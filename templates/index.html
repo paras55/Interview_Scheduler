@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Interview Sceduler</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/custom.css') }}">
+    <style>
+    h5 {text-align: center;}
+    </style>
+    </head>
+
+    <body>
+    
+      {% for mesg in get_flashed_messages() %}
+      <b><h5>{{ mesg }}</h5></b>
+      {% endfor %}
+    
+    <main role="main" class="container extra-bottom">
+      <h1 class="mt-5">Interview Creation Portal </h1>
+      
+    </main>
+    
+
+    <div class="container">    
+        
+        <!-- Button trigger modal -->
+        <div style="text-align: right;">
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Create Interview</button>
+        </div>
+
+        <h7><mark>List of Interviews : </mark></h7>
+        
+        <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Label">Add a task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form action="{{url_for('add')}}" method="POST" enctype="multipart/form-data">
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                
+                          
+                    <label for="cars" class="input-group-text" >Candidate Names :  </label>
+                    <select id="name" name="name">
+                      <option value="Paras Madan">Paras Madan</option>
+                      <option value="Sanyam Dawar">Sanyam Dawar</option>
+                      <option value="Arindam Yadav">Arindam Yadav</option>
+                      <option value="Sanya Nanda">Sanya Nanda</option>
+                      <option value="Manoj">Manoj Pradhan</option>
+                      <option value="Vanshika">Vanshika Sharma</option>
+                      <option value="Pranjul">Parnjul</option>
+                      <option value="Prerna Monga">Prerna Monga</option>
+                      </select>
+                      
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Email</span>
+                    <input type="text" class="form-control" defaultValue="parasmadn555@gmail.com" placeholder="Enter Email of Candidate" aria-label="task-name" id="email" name="email" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Date of Interview</span>
+                    <input type="date" class="form-control" placeholder="DD/MM/YYYY" aria-label="task-name" id="date" name="date" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Start Time (24 hr format)</span>
+                    <input type="text" class="form-control" placeholder="Ex : 17:30 " aria-label="task-name" id="stime" name="stime" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">End Time (24 hr format)</span>
+                    <input type="text" class="form-control" placeholder="Ex : 18 :30" aria-label="task-name" id="etime" name="etime" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Meeting Link</span>
+                    <input type="text" class="form-control" placeholder="Zoom Link or Google Meet" aria-label="task-name" id="link" name="link" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Notes</span>
+                    <input type="text" class="form-control" placeholder="Maintain Notes here" aria-label="task-name" id="notes" name="notes" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Upload Resume </span>
+                    <input type="file" class="form-control"  id="file" name="file"  >
+                </div>
+                
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submit-task" type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+            </div>
+        </div>
+        </div>
+
+    </div>
+
+
+
+
+    <!--Todo Table-->
+    <div class="container table-responsive">          
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="task-id">S.No</th>
+            <th class="task">Candidate Name</th>
+            <th class="task">Date of Interview</th>
+            <th class="task">Start Time</th>
+            <th class="status">Candidate Availability</th>
+            <th class="status">View Details</th>
+            <th class="update">Update</th>
+            <th class="update">Remove</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for item in threads %}
+            <tr>
+                <td>{{item.id}}</td>
+                <td>{{item.name_of_candidate}}</td>
+                <td>{{item.date_of_interview}}</td>
+                <td>{{item.start_time}}</td>
+                <td>{{item.status}}</td>
+                
+                <td>
+                <button class="btn btn-outline-secondary btn-sm remove" data-bs-toggle="modal" data-bs-target="#modal-view{{item.id}}" style="display: block; margin: 0 auto;"   >View</button>
+                </td>
+                
+                <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal-edit{{item.id}}" data-source="{{item.id}}" ><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
+                
+                <td>
+                <a href="/delete/{{item.id}}">
+                <button class="btn btn-outline-secondary btn-sm remove" style="display: block; margin: 0 auto;"  onclick="return confirm('Are You Sure To Delete ?')" >Delete</button>
+                </a>
+                </td>
+                
+            </tr>
+            
+            
+            <!--Modal for View-->
+            
+            <div class="modal fade" id="modal-view{{item.id}}" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Label">{{item.name_of_candidate}} Details </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Name</span>
+                    <input type="text" class="form-control" placeholder="Name of Candidate" value={{item.name_of_candidate}} id="name" name="name" aria-label="task-name" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Email</span>
+                    <input type="text" class="form-control" placeholder="Enter Email of Candidate" value={{item.email}}  >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Date of Interview (YYYY/MM/DD)</span>
+                    <input type="text" class="form-control" placeholder="No date decided"  value={{item.date_of_interview}} >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Start Time</span>
+                    <input type="text" class="form-control" placeholder="No Start Time given"  value={{item.start_time}} >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">End Time</span>
+                    <input type="text" class="form-control" placeholder="No End Time provided"  value={{item.end_time}} >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Meeting Link</span>
+                    <input type="text" class="form-control" placeholder="No meeting is scheduled"  value={{item.meeting_link}} >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Notes</span>
+                    <input type="text" class="form-control" placeholder="Maintain your Notes about the candidate"   value={{item.notes}}>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Download Resume </span>
+                    &emsp;&ensp;
+                    <a href="/download/{{item.resume_name}}">
+                    <button class="btn btn-outline-secondary btn-sm remove" style="display: block; margin: 0 auto;"  >Download</button>
+                    </a>
+                </div>
+                
+            </div>
+            
+            
+            </div>
+        </div>
+        </div>
+        
+        
+        <!--Modal for Edit-->
+        
+        <div class="modal fade" id="modal-edit{{item.id}}" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Label">EDIT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form action="/update/{{item.id}}/" method="POST" >
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Name</span>
+                    <input type="text" class="form-control" placeholder="Name of Candidate" id="name" name="name" value={{item.name_of_candidate}} aria-label="task-name" >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Email</span>
+                    <input type="text" class="form-control" placeholder="Enter Email of Candidate" aria-label="task-name" value={{item.email}} id="email" name="email" >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Date of Interview (YYYY/MM/DD)</span>
+                    <input type="text" class="form-control" placeholder="When is the interview scheduled" aria-label="task-name"  id="date" name="date" value={{item.date_of_interview}}  >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Start Time</span>
+                    <input type="text" class="form-control" placeholder="Start time of Interview" aria-label="task-name" id="stime" name="stime" value={{item.start_time}} >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">End Time</span>
+                    <input type="text" class="form-control" placeholder="End time of Interview" aria-label="task-name" id="etime" name="etime" value={{item.end_time}} >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Meeting Link</span>
+                    <input type="text" class="form-control" placeholder="Zoom Link or Google Meet" aria-label="task-name" id="link" name="link" value={{item.meeting_link}}  >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="task-form-display">Notes</span>
+                    <input type="text" class="form-control" placeholder="Maintain Notes here" aria-label="task-name" id="notes" name="notes"  value={{item.notes}} >
+                </div>
+                <div class="input-group mb-3">
+                <label for="cars" class="input-group-text" >Availability :  </label>
+                    <select id="status" name="status">
+                      <option value="Available">Available</option>
+                      <option value="Not Available">Not Available</option>
+                </select>
+                </div>
+                
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submit-task" type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+            </div>
+        </div>
+        </div>
+             
+        {% endfor %}
+        
+        </tbody>
+    </table>
+    </div>
+
+
+
+    <footer class="footer">
+      <div class="container">
+            <p class="text-muted"><small>App developed by Paras for Scaler Academy</small></p>
+      </div>
+    </footer>
+  </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='script/modal.js') }}"></script>
+
+</html>
