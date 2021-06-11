@@ -48,7 +48,7 @@ def home():
 
 # A function to convert time to suitable format for comparison  
 def time_convert(p):
-        d = datetime.strptime("22:30", "%H:%M")
+        d = datetime.strptime(p, "%H:%M")
         k=d.strftime("%I:%M")
         new=k.replace(":", ".")
         return float(new)       
@@ -82,7 +82,7 @@ def add():
         
     #setting values for default
     if resume.filename =='' :
-        flash('Resume not provided')
+        flash('Warning! Resume not provided')
         resume.filename='default.pdf'
     elif resume.filename !='':
         resume.save(secure_filename(resume.filename))
