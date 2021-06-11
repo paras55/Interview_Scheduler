@@ -66,7 +66,10 @@ def add():
     date=request.form['date']
     resume=request.files['file']
     
-    
+    if time_convert(start_time) > time_convert(end_time) and start_time !='' and end_time !='' :
+	flash('There is an error in your selection of time. Please choose correct start time and end time')
+        return redirect('/')
+	
     
     # checking if there is another interview scheduled at that time 
     check=Interview.query.filter_by(name_of_candidate=name).first()
@@ -94,7 +97,7 @@ def add():
     
     db.session.add(candidate)
     db.session.commit()
-    body_message='Greetings from Scaler Academy! \n\nYour Interview is scheduled at '+str(start_time)+' on '+str(date)+'\n\nPlease join with the given meeting link. \n'+str(meeting_link)+'\nRegards\nParas From Scaler'
+    body_message='Greetings from Scaler Academy! \n\nYour Interview is scheduled at '+str(start_time)+' on '+str(date)+'\n\nPlease join with the given meeting link. \n'+str(meeting_link)+'\n\nRegards\nParas From Scaler'
     msg = Message("Reminder for Interview",
                   sender="Scaler Academy",
                   recipients=[email],
